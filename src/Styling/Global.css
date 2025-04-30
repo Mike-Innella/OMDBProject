@@ -1,0 +1,128 @@
+/* (directory path: /src/Styling/Global.css) */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Light Theme (default) */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  color: #333333;
+  transition: background-color 400ms, color 400ms;
+}
+
+/* Dark Theme Override */
+.dark-theme body {
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: #2e8b57;
+  transition: color 400ms;
+}
+
+a:hover {
+  color: #8fbc8f;
+}
+
+.dark-theme a {
+  color: #4fc3f7;
+}
+
+.dark-theme a:hover {
+  color: #0288d1;
+}
+
+/* Main Layout */
+main {
+  padding: 16px;
+  min-height: calc(100vh - 128px); /* Adjust if header/footer sizes change */
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Buttons */
+button,
+.btn {
+  background-color: #2e8b57;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 400ms;
+}
+
+button:hover,
+.btn:hover {
+  background-color: #8fbc8f;
+}
+
+.dark-theme button,
+.dark-theme .btn {
+  background-color: #4fc3f7;
+  color: #ffffff;
+}
+
+.dark-theme button:hover,
+.dark-theme .btn:hover {
+  background-color: #0288d1;
+}
+
+/* Form Elements */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 2px solid #dddddd;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #333333;
+  transition: border-color 400ms;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #2e8b57;
+}
+
+.dark-theme input,
+.dark-theme textarea,
+.dark-theme select {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+  border: 2px solid #444444;
+}
+
+.dark-theme input:focus,
+.dark-theme textarea:focus,
+.dark-theme select:focus {
+  border-color: #4fc3f7;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 8px;
+  }
+
+  main {
+    padding: 8px;
+  }
+}

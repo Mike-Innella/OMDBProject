@@ -1,0 +1,266 @@
+/* (directory path: /src/Styling/AdminDashboard.css */
+
+.admin-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 2px 16px #ccc;
+}
+
+.admin-dashboard__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #ccc;
+}
+
+.admin-dashboard__title {
+  color: #222222;
+  font-size: 24px;
+  margin: 0;
+}
+
+.admin-dashboard__logout-button {
+  background-color: #d32f2f;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.admin-dashboard__logout-button:hover {
+  background-color: #b71c1c;
+}
+
+.admin-dashboard__error {
+  background-color: #fff3f3;
+  color: #d32f2f;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #d32f2f;
+  margin-bottom: 16px;
+}
+
+.admin-dashboard__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 0;
+  font-style: italic;
+  color: #444444;
+}
+
+.admin-dashboard__content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 32px;
+}
+
+.admin-dashboard__messages {
+  background-color: #ffffff;
+  border: 2px solid #dddddd;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.admin-dashboard__messages h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #dddddd;
+  padding-bottom: 8px;
+  color: #333333;
+}
+
+.admin-dashboard__messages-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.admin-dashboard__message-item {
+  padding: 16px;
+  border: 2px solid #dddddd;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: transform 0.3s, border-color 0.3s;
+  position: relative;
+}
+
+.admin-dashboard__message-item:hover {
+  border-color: #3366cc;
+  transform: translateY(-2px);
+}
+
+.admin-dashboard__message-item--selected {
+  background-color: #e0f0ff;
+  border-color: #3366cc;
+}
+
+.admin-dashboard__message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.admin-dashboard__message-name {
+  font-weight: bold;
+  color: #222222;
+}
+
+.admin-dashboard__message-date {
+  font-size: 12px;
+  color: #444444;
+  opacity: 0.7;
+}
+
+.admin-dashboard__messages-empty {
+  text-align: center;
+  padding: 16px;
+  font-style: italic;
+  color: #555555;
+  opacity: 0.7;
+}
+
+.admin-dashboard__message-detail {
+  background-color: #ffffff;
+  border: 2px solid #dddddd;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.admin-dashboard__message-selected h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333333;
+}
+
+.admin-dashboard__message-info {
+  margin-bottom: 16px;
+  border-bottom: 2px solid #dddddd;
+  padding-bottom: 16px;
+}
+
+.admin-dashboard__message-info p {
+  margin: 8px 0;
+  color: #333333;
+}
+
+.admin-dashboard__reply {
+  margin-top: 32px;
+}
+
+.admin-dashboard__reply h3 {
+  margin-bottom: 16px;
+  color: #333333;
+}
+
+.admin-dashboard__reply textarea {
+  width: 100%;
+  min-height: 150px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #cccccc;
+  border-radius: 8px;
+  resize: vertical;
+  background-color: #ffffff;
+  color: #222222;
+}
+
+.admin-dashboard__reply textarea:focus {
+  outline: none;
+  border-color: #3366cc;
+}
+
+.admin-dashboard__reply-send-button {
+  background-color: #3366cc;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.admin-dashboard__reply-send-button:hover:not(:disabled) {
+  background-color: #285bb5;
+}
+
+.admin-dashboard__reply-send-button:disabled {
+  background-color: #cccccc;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.admin-dashboard__reply-status {
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.admin-dashboard__reply-status--success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #2e7d32;
+}
+
+.admin-dashboard__reply-status--error {
+  background-color: #fff3f3;
+  color: #d32f2f;
+  border-left: 4px solid #d32f2f;
+}
+
+.admin-dashboard__message-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  font-style: italic;
+  color: #555555;
+  opacity: 0.7;
+  text-align: center;
+}
+
+/* Login Form */
+.admin-dashboard__login-form {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 32px;
+  background-color: #ffffff;
+  border: 2px solid #dddddd;
+  border-radius: 8px;
+}
+
+.admin-dashboard__form-group {
+  margin-bottom: 16px;
+}
+
+.admin-dashboard__form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #222222;
+  font-weight: bold;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .admin-dashboard__content {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .admin-dashboard__messages {
+    margin-bottom: 16px;
+  }
+
+  .admin-dashboard__message-item {
+    padding: 8px;
+  }
+}

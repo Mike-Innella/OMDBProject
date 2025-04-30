@@ -1,0 +1,117 @@
+/* (directory path: /src/Styling/Pages.css) */
+
+/* Page Header */
+.page__header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.page__header-title {
+  color: #333333;
+  font-size: 32px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+  transition: color 400ms;
+}
+
+.page__header-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 2px;
+  background-color: #2e8b57;
+  transition: background-color 400ms;
+}
+
+/* Hero Section */
+.home__hero {
+  background-color: #2e8b57;
+  color: #ffffff;
+  padding: 32px 0;
+  margin-bottom: 32px;
+  text-align: center;
+  border-radius: 4px;
+  transition: background-color 400ms;
+}
+
+.home__hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.home__hero-title {
+  font-size: 36px;
+  margin-bottom: 16px;
+}
+
+.home__hero-description {
+  font-size: 18px;
+  margin-bottom: 24px;
+  opacity: 0.9;
+}
+
+/* Reusable Section Wrapper */
+.section {
+  margin-bottom: 32px;
+}
+
+.section__button {
+  display: inline-block;
+  background-color: #2e8b57;
+  color: #ffffff;
+  padding: 16px 24px;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 400ms;
+}
+
+.section__button:hover {
+  background-color: #8fbc8f;
+}
+
+/* Profile Page Elements */
+.profile__container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.profile__tabs {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 2px solid #dddddd;
+}
+
+.profile__tab-btn {
+  background: none;
+  border: none;
+  color: #333333;
+  font-weight: bold;
+  padding: 16px 24px;
+  border-bottom: 2px solid transparent;
+  transition: color 400ms;
+}
+
+.profile__tab-btn--active {
+  color: #2e8b57;
+  border-color: #2e8b57;
+}
+
+.profile__logout-btn {
+  background: transparent;
+  color: #d32f2f;
+  border: none;
+  padding: 16px 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 400ms;
+}
+
+.profile__logout-btn:hover {
+  color: #b71c1c;
+}

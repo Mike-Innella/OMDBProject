@@ -1,0 +1,76 @@
+/* (directory path: /src/Styling/Footer.css) */
+
+.footer {
+  background-color: #f4f4f4;
+  border-top: 2px solid #cccccc;
+  padding: 32px 0;
+  margin-top: 64px;
+  transition: background-color 0.4s, border-color 0.4s;
+}
+
+.footer__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer__links ul {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
+}
+
+.footer__link {
+  color: #222222;
+  transition: color 0.4s;
+  padding: 8px 12px;
+  text-decoration: none;
+}
+
+.footer__link:hover {
+  color: #3366cc;
+}
+
+.footer__admin {
+  margin: 16px 0;
+}
+
+.footer__admin-link {
+  color: #ff6600;
+  font-size: 14px;
+  transition: color 0.4s;
+  text-decoration: none;
+}
+
+.footer__admin-link:hover {
+  text-decoration: underline;
+}
+
+.footer__copyright {
+  color: #444444;
+  opacity: 0.7;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .footer {
+    padding: 16px 0;
+  }
+
+  .footer__links ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer__container {
+    gap: 16px;
+  }
+}
