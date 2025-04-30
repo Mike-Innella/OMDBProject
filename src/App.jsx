@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import AdminDashboard from "./components/AdminDashboard";
 import MovieDetails from "./pages/MovieDetails";
+import AllMovies from "./pages/AllMovies";
 import ScrollToTop from "./Utilities/ScrollToTop";
 import "./Styling/Global.css";
 
@@ -36,7 +37,8 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/movie/:imdbID" element={<MovieDetails />}></Route>
+                <Route path="/movie/:imdbID" element={<MovieDetails />} />
+                <Route path="/all-movies" element={<AllMovies />} />
               </Routes>
             </main>
 
