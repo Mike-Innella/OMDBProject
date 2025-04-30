@@ -5,12 +5,12 @@
   flex-direction: column;
   gap: 24px;
   padding: 32px;
-  background-color: #ffffff;
+  background-color: #f0ddddd5;
   color: #333333;
   border-radius: 8px;
   box-shadow: 0 0 8px #00000014;
   transition: all 400ms ease;
-  height: fit-content
+  height: fit-content;
 }
 
 .movie-details__loading,
@@ -45,9 +45,11 @@
 
 .movie-details__poster {
   width: 300px;
+  margin: 8px;
   max-width: 100%;
+  max-height: 512px;
   border-radius: 4px;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 4px #00000033;
 }
 
 .movie-details__info {
@@ -72,6 +74,57 @@
   padding-left: 16px;
 }
 
+.movie-details__actions {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.movie-details__add-to-cart {
+  background-color: #2e8b57;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 300ms ease;
+  box-shadow: 0 2px 6px #0000001a;
+}
+
+.movie-details__add-to-cart:hover {
+  background-color: #3aa76d;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px #00000026;
+}
+
+.movie-details__add-to-cart:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px #0000001a;
+}
+
+.movie-details__added-message {
+  color: #2e8b57;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 8px 12px;
+  background-color: #e6f7ef;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Dark theme override */
 .dark-theme .movie-details {
   background-color: #1e1e1e;
@@ -84,4 +137,17 @@
 
 .dark-theme .movie-details__back-btn:hover {
   background-color: #0288d1;
+}
+
+.dark-theme .movie-details__add-to-cart {
+  background-color: #4fc3f7;
+}
+
+.dark-theme .movie-details__add-to-cart:hover {
+  background-color: #29b6f6;
+}
+
+.dark-theme .movie-details__added-message {
+  color: #4fc3f7;
+  background-color: #1a3a4a;
 }

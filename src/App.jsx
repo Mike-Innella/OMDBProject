@@ -13,6 +13,7 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import AdminDashboard from "./components/AdminDashboard";
 import MovieDetails from "./pages/MovieDetails";
+import ScrollToTop from "./Utilities/ScrollToTop";
 import "./Styling/Global.css";
 
 const isLocal = window.location.hostname === "localhost";
@@ -22,6 +23,7 @@ function App() {
     <ThemeProvider>
       <CartProvider>
         <Router basename={isLocal ? "/" : process.env.PUBLIC_URL}>
+          <ScrollToTop />
           <div className="app">
             <Header />
 

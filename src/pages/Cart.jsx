@@ -6,17 +6,22 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { CartContext } from "../context/CartContext";
 import { db } from "../firebase";
 import "../Styling/Pages.css";
+import "../Styling/Cart.css"
 
 const Cart = () => {
   const {
     cartItems,
+    addToCart,
     removeFromCart,
     updateQuantity,
     clearCart,
     getTotalPrice,
+    getItemCount,
   } = useContext(CartContext);
 
   const [checkoutStep, setCheckoutStep] = useState("cart");
+  const [recentlyRemoved, setRecentlyRemoved] = useState([]);
+  const [showGuestPrompt, setShowGuestPrompt] = useState(false);
   const [shippingInfo, setShippingInfo] = useState({
     fullName: "",
     address: "",
@@ -32,52 +37,52 @@ const Cart = () => {
     expiryDate: "",
     cvv: "",
   });
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [orderError, setOrderError] = useState(null);
   const [orderId, setOrderId] = useState(null);
 
   const navigate = useNavigate();
   const auth = getAuth();
 
-  // Handle shipping form input changes
   const handleShippingChange = (e) => {
     const { name, value } = e.target;
     setShippingInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle payment form input changes
   const handlePaymentChange = (e) => {
     const { name, value } = e.target;
     setPaymentInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Proceed to next checkout step
   const nextStep = () => {
     if (checkoutStep === "cart") {
-      setCheckoutStep("shipping");
-    } else if (checkoutStep === "shipping") {
-      setCheckoutStep("payment");
-    } else if (checkoutStep === "payment") {
-      handlePlaceOrder();
+      // Show guest checkout prompt if user is not logged in
+      const user = auth.currentUser;
+      if (!user) {
+        setShowGuestPrompt(true);
+      } else {
+        setCheckoutStep("shipping");
+      }
     }
+    else if (checkoutStep === "shipping") setCheckoutStep("payment");
+    else if (checkoutStep === "payment") handlePlaceOrder();
   };
 
-  // Previous checkout step
+  const handleGuestCheckout = () => {
+    setShowGuestPrompt(false);
+    setCheckoutStep("shipping");
+  };
+
+  const handleLoginRedirect = () => {
+    navigate("/login");
+  };
+
   const prevStep = () => {
-    if (checkoutStep === "shipping") {
-      setCheckoutStep("cart");
-    } else if (checkoutStep === "payment") {
-      setCheckoutStep("shipping");
-    } else if (checkoutStep === "confirmation") {
-      setCheckoutStep("payment");
-    }
+    if (checkoutStep === "shipping") setCheckoutStep("cart");
+    else if (checkoutStep === "payment") setCheckoutStep("shipping");
   };
 
-  // Validate current step before proceeding
   const validateStep = () => {
-    if (checkoutStep === "cart") {
-      return cartItems.length > 0;
-    } else if (checkoutStep === "shipping") {
+    if (checkoutStep === "cart") return cartItems.length > 0;
+    if (checkoutStep === "shipping") {
       return (
         shippingInfo.fullName.trim() &&
         shippingInfo.address.trim() &&
@@ -86,7 +91,8 @@ const Cart = () => {
         shippingInfo.zipCode.trim() &&
         shippingInfo.country.trim()
       );
-    } else if (checkoutStep === "payment") {
+    }
+    if (checkoutStep === "payment") {
       return (
         paymentInfo.cardName.trim() &&
         paymentInfo.cardNumber.trim() &&
@@ -97,18 +103,13 @@ const Cart = () => {
     return true;
   };
 
-  // Handle order placement
   const handlePlaceOrder = async () => {
-    setIsProcessing(true);
-    setOrderError(null);
-
     try {
       const user = auth.currentUser;
-
       const orderData = {
         userId: user ? user.uid : "guest",
         items: cartItems.map((item) => ({
-          id: item.imdbId,
+          id: item.imdbID,
           title: item.Title,
           price: item.price,
           quantity: item.quantity,
@@ -118,39 +119,48 @@ const Cart = () => {
         date: serverTimestamp(),
         status: "Processing",
       };
-
       const docRef = await addDoc(collection(db, "orders"), orderData);
-
       setOrderId(docRef.id);
-      setCheckoutStep("confirmation");
-
       clearCart();
+      setCheckoutStep("confirmation");
     } catch (error) {
       console.error("Error placing order:", error);
-      setOrderError("Failed to place order. Please try again.");
-    } finally {
-      setIsProcessing(false);
+      alert("Failed to place order. Please try again.");
     }
   };
 
-  // Render cart items
-  const renderCartItems = () => {
-    if (cartItems.length === 0) {
-      return (
-        <div className="cart__empty">
-          <h2>Your cart is empty</h2>
-          <p>Looks like you haven't added any movies to your cart yet.</p>
-          <Link to="/" className="cart__continue-btn">
-            Browse Movies
-          </Link>
-        </div>
-      );
-    }
+  const handleRemoveItem = (item) => {
+    removeFromCart(item.imdbID);
+    // Add to recently removed items and ensure it's not duplicated
+    setRecentlyRemoved((prev) => {
+      const exists = prev.some(removed => removed.imdbID === item.imdbID);
+      if (exists) {
+        return prev;
+      }
+      return [...prev, item];
+    });
+  };
 
-    return (
-      <div className="cart__list">
+  const handleReAddItem = (item) => {
+    addToCart(item);
+    setRecentlyRemoved((prev) =>
+      prev.filter((removed) => removed.imdbID !== item.imdbID)
+    );
+  };
+
+  const renderCartItems = () => {
+    const cartContent = cartItems.length === 0 ? (
+      <div className="cart__empty">
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added any movies to your cart yet.</p>
+        <Link to="/" className="cart__continue-btn">
+          Browse Movies
+        </Link>
+      </div>
+    ) : (
+      <div className="cart__items-container">
         {cartItems.map((item) => (
-          <div className="cart__item" key={item.imdbId}>
+          <div className="cart__item" key={item.imdbID}>
             <div className="cart__item-image">
               <img
                 src={
@@ -168,7 +178,7 @@ const Cart = () => {
             <div className="cart__item-quantity">
               <button
                 className="cart__quantity-btn"
-                onClick={() => updateQuantity(item.imdbId, item.quantity - 1)}
+                onClick={() => updateQuantity(item.imdbID, item.quantity - 1)}
                 disabled={item.quantity <= 1}
               >
                 -
@@ -176,7 +186,7 @@ const Cart = () => {
               <span>{item.quantity}</span>
               <button
                 className="cart__quantity-btn"
-                onClick={() => updateQuantity(item.imdbId, item.quantity + 1)}
+                onClick={() => updateQuantity(item.imdbID, item.quantity + 1)}
               >
                 +
               </button>
@@ -186,7 +196,7 @@ const Cart = () => {
             </div>
             <button
               className="cart__remove-btn"
-              onClick={() => removeFromCart(item.imdbId)}
+              onClick={() => handleRemoveItem(item)}
             >
               Remove
             </button>
@@ -194,25 +204,148 @@ const Cart = () => {
         ))}
       </div>
     );
+
+    return (
+      <div className="cart__list">
+        {cartContent}
+        
+        {recentlyRemoved.length > 0 && (
+          <div className="cart__recently-removed">
+            <h3>Recently Removed</h3>
+            {recentlyRemoved.map((item) => (
+              <div key={item.imdbID} className="cart__removed-item">
+                <span>{item.Title}</span>
+                <div className="cart__removed-item-actions">
+                  <button 
+                    className="cart__readd-btn" 
+                    onClick={() => handleReAddItem(item)}
+                  >
+                    Re-add
+                  </button>
+                  <button 
+                    className="cart__remove-permanently-btn" 
+                    onClick={() => setRecentlyRemoved(prev => 
+                      prev.filter(removed => removed.imdbID !== item.imdbID)
+                    )}
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
   };
 
-  // Render shipping form
   const renderShippingForm = () => (
     <div className="cart__shipping-form">
       <h2>Shipping Information</h2>
-      {/* your shipping form here */}
+      <input
+        type="text"
+        name="fullName"
+        placeholder="Full Name"
+        onChange={handleShippingChange}
+      />
+      <input
+        type="text"
+        name="address"
+        placeholder="Address"
+        onChange={handleShippingChange}
+      />
+      <input
+        type="text"
+        name="city"
+        placeholder="City"
+        onChange={handleShippingChange}
+      />
+      <input
+        type="text"
+        name="state"
+        placeholder="State"
+        onChange={handleShippingChange}
+      />
+      <input
+        type="text"
+        name="zipCode"
+        placeholder="Zip Code"
+        onChange={handleShippingChange}
+      />
+      <input
+        type="text"
+        name="country"
+        placeholder="Country"
+        onChange={handleShippingChange}
+      />
+      <input
+        type="text"
+        name="phone"
+        placeholder="Phone Number"
+        onChange={handleShippingChange}
+      />
     </div>
   );
 
-  // Render payment form
   const renderPaymentForm = () => (
     <div className="cart__payment-form">
       <h2>Payment Information</h2>
-      {/* your payment form here */}
+      <input
+        type="text"
+        name="cardName"
+        placeholder="Name on Card"
+        onChange={handlePaymentChange}
+      />
+      <input
+        type="text"
+        name="cardNumber"
+        placeholder="Card Number"
+        onChange={handlePaymentChange}
+      />
+      <input
+        type="text"
+        name="expiryDate"
+        placeholder="Expiry Date"
+        onChange={handlePaymentChange}
+      />
+      <input
+        type="text"
+        name="cvv"
+        placeholder="CVV"
+        onChange={handlePaymentChange}
+      />
     </div>
   );
 
-  // Render current checkout step
+  const renderGuestPrompt = () => (
+    <div className="cart__guest-prompt-overlay">
+      <div className="cart__guest-prompt">
+        <h2>Checkout Options</h2>
+        <p>Would you like to sign in or continue as a guest?</p>
+        <div className="cart__guest-prompt-actions">
+          <button 
+            className="cart__guest-prompt-login" 
+            onClick={handleLoginRedirect}
+          >
+            Sign In
+          </button>
+          <button 
+            className="cart__guest-prompt-guest" 
+            onClick={handleGuestCheckout}
+          >
+            Continue as Guest
+          </button>
+        </div>
+        <button 
+          className="cart__guest-prompt-close" 
+          onClick={() => setShowGuestPrompt(false)}
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+  );
+
   const renderCheckoutStep = () => {
     if (checkoutStep === "cart") return renderCartItems();
     if (checkoutStep === "shipping") return renderShippingForm();
@@ -222,7 +355,9 @@ const Cart = () => {
         <div className="cart__confirmation">
           <h2>Order Placed Successfully! ✅</h2>
           <p>Your order ID is: {orderId}</p>
-          <Link to="/">Return to Home</Link>
+          <Link to="/" className="cart__home-link">
+            Return to Home
+          </Link>
         </div>
       );
     }
@@ -232,48 +367,37 @@ const Cart = () => {
   return (
     <div className="cart">
       <div className="cart__header">
-        <h1>Shopping Cart</h1>
+        <h1>Shopping Cart ({getItemCount()} items)</h1>
+        <button className="cart__home-btn" onClick={() => navigate("/")}>
+          Back to Main Page
+        </button>
       </div>
 
-      {/* Checkout progress steps */}
+      <section className="cart__section">{renderCheckoutStep()}</section>
+
       {checkoutStep !== "confirmation" && (
-        <div className="cart__steps">
-          <div
-            className={`cart__step ${
-              ["cart", "shipping", "payment"].includes(checkoutStep)
-                ? "completed"
-                : ""
-            }`}
+        <div className="cart__actions">
+          {checkoutStep !== "cart" && (
+            <button className="cart__actions-back" onClick={prevStep}>
+              ← Back
+            </button>
+          )}
+          <button
+            className="cart__actions-next"
+            onClick={() => {
+              if (validateStep()) {
+                nextStep();
+              } else {
+                alert("Please fill in all required fields.");
+              }
+            }}
           >
-            <span className="cart__step-number">1</span>
-            <span className="cart__step-name">Cart</span>
-          </div>
-          <div className="cart__divider"></div>
-          <div
-            className={`cart__step ${
-              ["shipping", "payment", "confirmation"].includes(checkoutStep)
-                ? "completed"
-                : ""
-            }`}
-          >
-            <span className="cart__step-number">2</span>
-            <span className="cart__step-name">Shipping</span>
-          </div>
-          <div className="cart__divider"></div>
-          <div
-            className={`cart__step ${
-              ["payment", "confirmation"].includes(checkoutStep)
-                ? "completed"
-                : ""
-            }`}
-          >
-            <span className="cart__step-number">3</span>
-            <span className="cart__step-name">Payment</span>
-          </div>
+            {checkoutStep === "payment" ? "Place Order" : "Next →"}
+          </button>
         </div>
       )}
-
-      <section className="cart__section">{renderCheckoutStep()}</section>
+      
+      {showGuestPrompt && renderGuestPrompt()}
     </div>
   );
 };
