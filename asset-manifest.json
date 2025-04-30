@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/OMDBProject/static/css/main.510f6578.css",
+    "main.js": "/OMDBProject/static/js/main.db0687f3.js",
+    "index.html": "/OMDBProject/index.html",
+    "main.510f6578.css.map": "/OMDBProject/static/css/main.510f6578.css.map",
+    "main.db0687f3.js.map": "/OMDBProject/static/js/main.db0687f3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.510f6578.css",
+    "static/js/main.db0687f3.js"
+  ]
+}
