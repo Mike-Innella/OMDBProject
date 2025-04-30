@@ -5,7 +5,7 @@ const API_KEY = "b750bac";
 const BASE_URL = "https://www.omdbapi.com/";
 
 /**
- * Search for movies by title
+ * Search for movies by title (basic metadata only)
  * @param {string} searchTerm
  * @param {number} page
  * @returns {Promise}
@@ -54,7 +54,7 @@ export const getMovieDetails = async (imdbId) => {
 };
 
 /**
- * Get top rated movies (simulated)
+ * Get top rated movies (simulated list with full metadata)
  * @param {number} count
  * @returns {Promise}
  */
@@ -66,19 +66,23 @@ export const getTopRatedMovies = async (count = 10) => {
     "Minecraft",
     "The Godfather",
   ];
-  const results = [];
+  const detailedResults = [];
 
   try {
     for (const title of popularTitles) {
-      if (results.length >= count) break;
+      if (detailedResults.length >= count) break;
 
-      const response = await searchMovies(title);
-      if (response.Search) {
-        results.push(...response.Search.slice(0, 3));
+      const basicResponse = await searchMovies(title);
+      if (basicResponse.Search) {
+        const moviesToFetch = basicResponse.Search.slice(0, 3);
+        const fullMovies = await Promise.all(
+          moviesToFetch.map((movie) => getMovieDetails(movie.imdbID))
+        );
+        detailedResults.push(...fullMovies);
       }
     }
 
-    return { Search: results.slice(0, count) };
+    return { Search: detailedResults.slice(0, count) };
   } catch (error) {
     console.error("Error fetching top rated movies:", error);
     throw error;
@@ -86,35 +90,36 @@ export const getTopRatedMovies = async (count = 10) => {
 };
 
 /**
- * Get most recent releases (simulated)
+ * Get most recent releases (simulated list with full metadata)
  * @param {number} count
  * @returns {Promise}
  */
 export const getRecentReleases = async (count = 10) => {
   const currentYear = new Date().getFullYear();
+  const detailedResults = [];
 
-  try {
+  const fetchRecent = async (year) => {
     const response = await fetch(
-      `${BASE_URL}?apikey=${API_KEY}&s=movie&y=${currentYear}&type=movie`
+      `${BASE_URL}?apikey=${API_KEY}&s=movie&y=${year}&type=movie`
     );
     const data = await response.json();
+    return data.Search || [];
+  };
 
-    if (data.Response === "False") {
-      const fallbackResponse = await fetch(
-        `${BASE_URL}?apikey=${API_KEY}&s=movie&y=${currentYear - 1}&type=movie`
-      );
-      const fallbackData = await fallbackResponse.json();
+  try {
+    let movies = await fetchRecent(currentYear);
 
-      if (fallbackData.Response === "False") {
-        throw new Error(
-          fallbackData.Error || "Failed to fetch recent releases"
-        );
-      }
-
-      return { Search: fallbackData.Search.slice(0, count) };
+    if (!movies.length) {
+      movies = await fetchRecent(currentYear - 1);
     }
 
-    return { Search: data.Search.slice(0, count) };
+    const moviesToFetch = movies.slice(0, count);
+
+    const fullDetails = await Promise.all(
+      moviesToFetch.map((movie) => getMovieDetails(movie.imdbID))
+    );
+
+    return { Search: fullDetails };
   } catch (error) {
     console.error("Error fetching recent releases:", error);
     throw error;
@@ -122,7 +127,7 @@ export const getRecentReleases = async (count = 10) => {
 };
 
 /**
- * Get all movies (paginated)
+ * Get all movies (paginated) — basic metadata only
  * @param {number} page
  * @returns {Promise}
  */
@@ -141,5 +146,26 @@ export const getAllMovies = async (page = 1) => {
   } catch (error) {
     console.error("Error fetching all movies:", error);
     throw error;
+  }
+};
+
+/**
+ * Search for movies and retrieve full details for each
+ * @param {string} searchTerm
+ * @returns {Promise<Array>}
+ */
+export const searchMoviesWithDetails = async (searchTerm) => {
+  try {
+    const basicResults = await searchMovies(searchTerm);
+    if (!basicResults.Search) return [];
+
+    const detailedResults = await Promise.all(
+      basicResults.Search.map((movie) => getMovieDetails(movie.imdbID))
+    );
+
+    return detailedResults;
+  } catch (error) {
+    console.error("Error searching movies with details:", error);
+    return [];
   }
 };

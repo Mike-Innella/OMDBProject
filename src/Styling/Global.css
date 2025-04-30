@@ -9,16 +9,38 @@
 
 /* Light Theme (default) */
 body {
-  font-family: Arial, sans-serif;
   background-color: #f8f8f8;
   color: #333333;
-  transition: background-color 400ms, color 400ms;
+  font-family: 'Poppins', sans-serif;
+  transition: all 400ms ease;
 }
 
 /* Dark Theme Override */
-.dark-theme body {
+.dark-theme body,
+.dark-theme .header,
+.dark-theme .footer,
+.dark-theme .search-bar,
+.dark-theme .movie-list,
+.dark-theme .movie-card,
+.dark-theme .home-page,
+.dark-theme main {
   background-color: #121212;
+}
+
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme p,
+.dark-theme input,
+.dark-theme textarea,
+.dark-theme span {
   color: #f0f0f0;
+}
+
+.dark-theme .movie-card__year,
+.dark-theme .movie-card__price {
+  color: #a1a1a1;
 }
 
 /* Links */

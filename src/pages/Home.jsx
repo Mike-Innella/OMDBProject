@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
 import MovieList from "../components/MovieList";
 import {
-  searchMovies,
   getTopRatedMovies,
   getRecentReleases,
+  searchMoviesWithDetails,
 } from "../services/omdbApi";
+
 import "../Styling/Pages.css";
 
 const Home = () => {
@@ -25,13 +26,11 @@ const Home = () => {
     recent: null,
   });
 
-  // Fetch initial data on component mount
+  // Fetch top rated and recent release data on mount
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        // Fetch top rated movies
         const topRated = await getTopRatedMovies();
-        console.log("Top Rated Response:", topRated);
         setTopRatedMovies(topRated.Search || []);
         setLoading((prev) => ({ ...prev, topRated: false }));
       } catch (error) {
@@ -41,9 +40,7 @@ const Home = () => {
       }
 
       try {
-        // Fetch recent releases
         const recent = await getRecentReleases();
-        console.log("Recent Releases Response:", recent);
         setRecentReleases(recent.Search || []);
         setLoading((prev) => ({ ...prev, recent: false }));
       } catch (error) {
@@ -56,15 +53,15 @@ const Home = () => {
     fetchInitialData();
   }, []);
 
-  // Handle search
-  const handleSearch = async (searchTerm) => {
+  // Handle movie search
+  const handleSearch = async (e, searchTerm) => {
+    e.preventDefault();
     setLoading((prev) => ({ ...prev, search: true }));
     setError((prev) => ({ ...prev, search: null }));
 
     try {
-      const results = await searchMovies(searchTerm);
-      console.log("Search Response:", results);
-      setSearchResults(results.Search || []);
+      const results = await searchMoviesWithDetails(searchTerm);
+      setSearchResults(results); // Already a full array
     } catch (error) {
       console.error("Search error:", error);
       setError((prev) => ({ ...prev, search: error.message }));
@@ -116,7 +113,7 @@ const Home = () => {
         />
       </section>
 
-      {/* All Movies Button */}
+      {/* View All Movies Button */}
       <section className="home-page__all-movies">
         <Link to="/all-movies" className="home-page__all-movies-btn">
           View All Movies

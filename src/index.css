@@ -1,5 +1,5 @@
 /* (directory path: /src/index.css) */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
 /* Global Box Sizing */
 *,
@@ -13,8 +13,4 @@ body {
   font-family: "Poppins", sans-serif;
   background-color: #f8f8f8; /* light theme default */
   color: #333333; /* light theme default */
-}
-
-code {
-  font-family: "Times New Roman", Times, serif;
 }

@@ -12,13 +12,16 @@ import LoginSignup from "./pages/LoginSignup";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import AdminDashboard from "./components/AdminDashboard";
+import MovieDetails from "./pages/MovieDetails";
 import "./Styling/Global.css";
+
+const isLocal = window.location.hostname === "localhost";
 
 function App() {
   return (
     <ThemeProvider>
       <CartProvider>
-        <Router>
+        <Router basename={isLocal ? "/" : process.env.PUBLIC_URL}>
           <div className="app">
             <Header />
 
@@ -31,6 +34,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/movie/:imdbID" element={<MovieDetails />}></Route>
               </Routes>
             </main>
 

@@ -6,11 +6,15 @@
   box-shadow: 0 2px 8px #cccccc;
   overflow: hidden;
   position: relative;
-  transition: transform 400ms, box-shadow 400ms;
+  transition: all 400ms ease;
   height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   cursor: pointer;
+  padding: 12px;
+  margin: 8px;
+  border: 2px solid #000000;
 }
 
 .movie-card:hover {
@@ -18,14 +22,14 @@
   box-shadow: 0 4px 16px #bbbbbb;
 }
 
-.movie-poster {
+.movie-card__poster {
   position: relative;
   overflow: hidden;
   height: 0;
   padding-top: 150%;
 }
 
-.movie-poster img {
+.movie-card__poster img {
   position: absolute;
   top: 0;
   left: 0;
@@ -33,10 +37,6 @@
   height: 100%;
   object-fit: cover;
   transition: transform 800ms;
-}
-
-.movie-card:hover .movie-poster img {
-  transform: scale(1.05);
 }
 
 .movie-year {
@@ -131,7 +131,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
-  background-color: #444444; 
+  background-color: #444444;
   color: #ffffff;
   border: none;
   border-radius: 50%;

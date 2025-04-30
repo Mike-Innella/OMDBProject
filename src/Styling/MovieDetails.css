@@ -1,0 +1,87 @@
+/* (directory path: /src/Styling/MovieDetails.css) */
+
+.movie-details {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+  background-color: #ffffff;
+  color: #333333;
+  border-radius: 8px;
+  box-shadow: 0 0 8px #00000014;
+  transition: all 400ms ease;
+  height: fit-content
+}
+
+.movie-details__loading,
+.movie-details__error {
+  padding: 32px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.movie-details__back-btn {
+  background-color: #2e8b57;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  margin: 16px 8px 8px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 400ms ease;
+}
+
+.movie-details__back-btn:hover {
+  background-color: #8fbc8f;
+}
+
+.movie-details__content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 16px;
+}
+
+.movie-details__poster {
+  width: 300px;
+  max-width: 100%;
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.movie-details__info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.movie-details__info h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.movie-details__info p,
+.movie-details__info li {
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+.movie-details__info ul {
+  padding-left: 16px;
+}
+
+/* Dark theme override */
+.dark-theme .movie-details {
+  background-color: #1e1e1e;
+  color: #f0f0f0;
+}
+
+.dark-theme .movie-details__back-btn {
+  background-color: #4fc3f7;
+}
+
+.dark-theme .movie-details__back-btn:hover {
+  background-color: #0288d1;
+}
