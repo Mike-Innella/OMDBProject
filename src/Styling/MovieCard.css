@@ -1,9 +1,9 @@
 /* (directory path: /src/Styling/MovieCard.css) */
 
 .movie-card {
-  background-color: #f8f8f8;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px #cccccc;
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   position: relative;
   transition: all 400ms ease;
@@ -12,14 +12,24 @@
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-  padding: 12px;
+  padding: 16px;
   margin: 8px;
-  border: 2px solid #000000;
+  border: none;
+}
+
+.light-theme .movie-card {
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
 }
 
 .movie-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px #bbbbbb;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.light-theme .movie-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .movie-card__poster {
@@ -72,24 +82,36 @@
 
 .movie-title {
   margin-bottom: 8px;
-  font-size: 16px;
-  color: #333333;
+  font-size: 18px;
+  color: #ffffff;
   transition: color 400ms;
+  font-weight: 600;
+}
+
+.light-theme .movie-title {
+  color: #222222;
 }
 
 .movie-plot-short {
   font-size: 14px;
-  color: #333333;
-  opacity: 0.8;
+  color: #cccccc;
   margin-bottom: 16px;
   flex-grow: 1;
   transition: color 400ms;
 }
 
+.light-theme .movie-plot-short {
+  color: #555555;
+}
+
 .movie-details {
   font-size: 14px;
-  color: #333333;
+  color: #cccccc;
   transition: color 400ms;
+}
+
+.light-theme .movie-details {
+  color: #555555;
 }
 
 .movie-details p {
@@ -97,34 +119,68 @@
 }
 
 .movie-details strong {
-  color: #2e8b57;
+  color: #e50914;
   transition: color 400ms;
 }
 
-.movie-ratings ul {
-  list-style: none;
-  padding-left: 16px;
-  margin-top: 4px;
+.light-theme .movie-details strong {
+  color: #e50914;
 }
 
-.movie-ratings li {
-  margin-bottom: 4px;
-}
-
-.add-to-cart-btn {
-  width: 100%;
+.movie-card__ratings {
+  margin: 8px 0;
   padding: 8px;
-  background-color: #2e8b57;
+  background-color: #2a2a2a;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.light-theme .movie-card__ratings {
+  background-color: #e0e0e0;
+}
+
+.movie-card__rating {
+  margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.movie-card__rating-source {
+  font-weight: bold;
+  color: #cccccc;
+  margin-right: 8px;
+}
+
+.light-theme .movie-card__rating-source {
+  color: #444444;
+}
+
+.movie-card__rating-value {
+  color: #e50914;
+  font-weight: 600;
+}
+
+.movie-card__add-to-cart-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #e50914;
   color: #ffffff;
   border: none;
+  border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 400ms;
-  margin-top: auto;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 300ms, transform 200ms;
+  margin-top: 16px;
 }
 
-.add-to-cart-btn:hover {
-  background-color: #8fbc8f;
+.movie-card__add-to-cart-button:hover {
+  background-color: #f40612;
+  transform: translateY(-2px);
+}
+
+.movie-card__add-to-cart-button:active {
+  transform: translateY(0);
 }
 
 .close-details-btn {
@@ -148,6 +204,21 @@
 
 .close-details-btn:hover {
   background-color: #000000;
+}
+
+/* Specific styling for Top Rated and Recent Releases sections */
+@media (min-width: 769px) {
+  .home-page__top-rated .movie-card,
+  .home-page__recent-releases .movie-card {
+    margin: 0;
+    width: 100%;
+  }
+  
+  .home-page__top-rated .movie-card__poster,
+  .home-page__recent-releases .movie-card__poster {
+    height: 0;
+    padding-top: 140%; /* Slightly shorter to fit better */
+  }
 }
 
 /* Mobile Styles */

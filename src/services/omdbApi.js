@@ -1,7 +1,7 @@
 // (directory path: /src/services/omdbApi.js)
 
 // Constants
-const API_KEY = "b750bac";
+const API_KEY = process.env.REACT_APP_OMDB_API_KEY || "b750bac";
 const BASE_URL = "https://www.omdbapi.com/";
 
 /**
@@ -12,21 +12,33 @@ const BASE_URL = "https://www.omdbapi.com/";
  */
 export const searchMovies = async (searchTerm, page = 1) => {
   try {
+    if (!searchTerm) {
+      console.error("Search term is required");
+      return { Search: [], totalResults: "0", Response: "True" };
+    }
+
     const response = await fetch(
       `${BASE_URL}?apikey=${API_KEY}&s=${encodeURIComponent(
         searchTerm
       )}&page=${page}`
     );
+    
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`);
+      return { Search: [], totalResults: "0", Response: "True" };
+    }
+    
     const data = await response.json();
 
     if (data.Response === "False") {
-      throw new Error(data.Error || "Failed to fetch movies");
+      console.error("API returned error:", data.Error);
+      return { Search: [], totalResults: "0", Response: "True" };
     }
 
     return data;
   } catch (error) {
     console.error("Error searching movies:", error);
-    throw error;
+    return { Search: [], totalResults: "0", Response: "True" };
   }
 };
 
@@ -37,19 +49,31 @@ export const searchMovies = async (searchTerm, page = 1) => {
  */
 export const getMovieDetails = async (imdbId) => {
   try {
+    if (!imdbId) {
+      console.error("IMDb ID is required");
+      return null;
+    }
+
     const response = await fetch(
       `${BASE_URL}?apikey=${API_KEY}&i=${imdbId}&plot=full`
     );
+    
+    if (!response.ok) {
+      console.error(`HTTP error! status: ${response.status}`);
+      return null;
+    }
+    
     const data = await response.json();
 
     if (data.Response === "False") {
-      throw new Error(data.Error || "Failed to fetch movie details");
+      console.error("API returned error:", data.Error);
+      return null;
     }
 
     return data;
   } catch (error) {
     console.error("Error fetching movie details:", error);
-    throw error;
+    return null;
   }
 };
 
@@ -66,26 +90,46 @@ export const getTopRatedMovies = async (count = 10) => {
     "Minecraft",
     "The Godfather",
   ];
-  const detailedResults = [];
+  let detailedResults = [];
 
   try {
     for (const title of popularTitles) {
       if (detailedResults.length >= count) break;
 
-      const basicResponse = await searchMovies(title);
-      if (basicResponse.Search) {
-        const moviesToFetch = basicResponse.Search.slice(0, 3);
-        const fullMovies = await Promise.all(
-          moviesToFetch.map((movie) => getMovieDetails(movie.imdbID))
-        );
-        detailedResults.push(...fullMovies);
+      try {
+        const basicResponse = await searchMovies(title);
+        if (basicResponse.Search) {
+          const moviesToFetch = basicResponse.Search.slice(0, 3);
+          
+          // Use Promise.allSettled instead of Promise.all
+          const fullMoviesPromises = await Promise.allSettled(
+            moviesToFetch.map((movie) => {
+              if (movie && movie.imdbID) {
+                return getMovieDetails(movie.imdbID);
+              }
+              return Promise.resolve(null);
+            })
+          );
+          
+          // Filter out failed promises and extract values from fulfilled ones
+          const fullMovies = fullMoviesPromises
+            .filter(result => result.status === 'fulfilled' && result.value)
+            .map(result => result.value);
+            
+          detailedResults.push(...fullMovies);
+        }
+      } catch (titleError) {
+        console.error(`Error fetching movies for title "${title}":`, titleError);
+        // Continue with the next title instead of failing the entire operation
+        continue;
       }
     }
 
     return { Search: detailedResults.slice(0, count) };
   } catch (error) {
     console.error("Error fetching top rated movies:", error);
-    throw error;
+    // Return a valid response structure instead of throwing
+    return { Search: [], totalResults: "0", Response: "True" };
   }
 };
 
@@ -96,14 +140,19 @@ export const getTopRatedMovies = async (count = 10) => {
  */
 export const getRecentReleases = async (count = 10) => {
   const currentYear = new Date().getFullYear();
-  const detailedResults = [];
+  let detailedResults = [];
 
   const fetchRecent = async (year) => {
-    const response = await fetch(
-      `${BASE_URL}?apikey=${API_KEY}&s=movie&y=${year}&type=movie`
-    );
-    const data = await response.json();
-    return data.Search || [];
+    try {
+      const response = await fetch(
+        `${BASE_URL}?apikey=${API_KEY}&s=movie&y=${year}&type=movie`
+      );
+      const data = await response.json();
+      return data.Search || [];
+    } catch (error) {
+      console.error(`Error fetching movies for year ${year}:`, error);
+      return [];
+    }
   };
 
   try {
@@ -115,14 +164,26 @@ export const getRecentReleases = async (count = 10) => {
 
     const moviesToFetch = movies.slice(0, count);
 
-    const fullDetails = await Promise.all(
-      moviesToFetch.map((movie) => getMovieDetails(movie.imdbID))
+    // Use Promise.allSettled instead of Promise.all
+    const fullDetailsPromises = await Promise.allSettled(
+      moviesToFetch.map((movie) => {
+        if (movie && movie.imdbID) {
+          return getMovieDetails(movie.imdbID);
+        }
+        return Promise.resolve(null);
+      })
     );
 
-    return { Search: fullDetails };
+    // Filter out failed promises and extract values from fulfilled ones
+    detailedResults = fullDetailsPromises
+      .filter(result => result.status === 'fulfilled' && result.value)
+      .map(result => result.value);
+
+    return { Search: detailedResults };
   } catch (error) {
     console.error("Error fetching recent releases:", error);
-    throw error;
+    // Return a valid response structure instead of throwing
+    return { Search: [], totalResults: "0", Response: "True" };
   }
 };
 
@@ -139,13 +200,51 @@ export const getAllMovies = async (page = 1) => {
     const data = await response.json();
 
     if (data.Response === "False") {
-      throw new Error(data.Error || "Failed to fetch movies");
+      console.error("API returned error:", data.Error);
+      // Return a valid response structure instead of throwing
+      return { Search: [], totalResults: "0", Response: "True" };
     }
 
     return data;
   } catch (error) {
     console.error("Error fetching all movies:", error);
-    throw error;
+    // Return a valid response structure instead of throwing
+    return { Search: [], totalResults: "0", Response: "True" };
+  }
+};
+
+/**
+ * Get all movies with detailed information including ratings
+ * @param {number} page
+ * @returns {Promise}
+ */
+export const getAllMoviesWithDetails = async (page = 1) => {
+  try {
+    const basicData = await getAllMovies(page);
+    
+    if (!basicData.Search) return basicData;
+    
+    // Use Promise.allSettled instead of Promise.all to handle individual failures
+    const detailedResultsPromises = await Promise.allSettled(
+      basicData.Search.map(movie => {
+        // Add null check
+        if (movie && movie.imdbID) {
+          return getMovieDetails(movie.imdbID);
+        }
+        return Promise.resolve(null); // Return a resolved promise with null for invalid movies
+      })
+    );
+    
+    // Filter out failed promises and extract values from fulfilled ones
+    const detailedResults = detailedResultsPromises
+      .filter(result => result.status === 'fulfilled' && result.value)
+      .map(result => result.value);
+    
+    return { ...basicData, Search: detailedResults };
+  } catch (error) {
+    console.error("Error fetching all movies with details:", error);
+    // Return a valid response structure instead of throwing
+    return { Search: [], totalResults: "0", Response: "True" };
   }
 };
 
@@ -159,9 +258,21 @@ export const searchMoviesWithDetails = async (searchTerm) => {
     const basicResults = await searchMovies(searchTerm);
     if (!basicResults.Search) return [];
 
-    const detailedResults = await Promise.all(
-      basicResults.Search.map((movie) => getMovieDetails(movie.imdbID))
+    // Use Promise.allSettled instead of Promise.all to handle individual failures
+    const detailedResultsPromises = await Promise.allSettled(
+      basicResults.Search.map((movie) => {
+        // Add null check
+        if (movie && movie.imdbID) {
+          return getMovieDetails(movie.imdbID);
+        }
+        return Promise.resolve(null); // Return a resolved promise with null for invalid movies
+      })
     );
+
+    // Filter out failed promises and extract values from fulfilled ones
+    const detailedResults = detailedResultsPromises
+      .filter(result => result.status === 'fulfilled' && result.value)
+      .map(result => result.value);
 
     return detailedResults;
   } catch (error) {

@@ -7,100 +7,91 @@
   box-sizing: border-box;
 }
 
-/* Light Theme (default) */
+/* Dark Theme (default) */
 body {
-  background-color: #bbe2ec;
-  color: #333333;
+  background-color: #121212;
+  color: #ffffff;
   font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
   transition: all 400ms ease;
 }
 
-/* Dark Theme Override */
-.dark-theme body,
-.dark-theme .header,
-.dark-theme .footer,
-.dark-theme .search-bar,
-.dark-theme .movie-list,
-.dark-theme .movie-card,
-.dark-theme .home-page,
-.dark-theme main {
-  background-color: #121212;
+/* Typography */
+h1 {
+  font-size: 32px;
+  margin-bottom: 16px;
+  font-weight: 700;
 }
 
-.dark-theme h1,
-.dark-theme h2,
-.dark-theme h3,
-.dark-theme h4,
-.dark-theme p,
-.dark-theme input,
-.dark-theme textarea,
-.dark-theme span {
-  color: #f0f0f0;
+h2 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  font-weight: 700;
 }
 
-.dark-theme .movie-card__year,
-.dark-theme .movie-card__price {
-  color: #a1a1a1;
+h3 {
+  font-size: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+p {
+  margin-bottom: 16px;
 }
 
 /* Links */
 a {
   text-decoration: none;
-  color: #2e8b57;
+  color: #0071eb;
   transition: color 400ms;
 }
 
 a:hover {
-  color: #8fbc8f;
-}
-
-.dark-theme a {
-  color: #4fc3f7;
-}
-
-.dark-theme a:hover {
-  color: #0288d1;
+  color: #2b8ff7;
 }
 
 /* Main Layout */
 main {
-  padding: 16px;
+  padding: 24px;
   min-height: calc(100vh - 128px); /* Adjust if header/footer sizes change */
+  background-color: #121212;
 }
 
 /* Container */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 24px;
 }
 
 /* Buttons */
 button,
 .btn {
-  background-color: #2e8b57;
+  background-color: #e50914;
   color: #ffffff;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 400ms;
+  font-size: 16px;
+  font-weight: 500;
 }
 
 button:hover,
 .btn:hover {
-  background-color: #8fbc8f;
+  background-color: #f40612;
 }
 
-.dark-theme button,
-.dark-theme .btn {
-  background-color: #4fc3f7;
+/* Secondary Buttons */
+.btn-secondary {
+  background-color: #333333;
   color: #ffffff;
 }
 
-.dark-theme button:hover,
-.dark-theme .btn:hover {
-  background-color: #0288d1;
+.btn-secondary:hover {
+  background-color: #444444;
 }
 
 /* Form Elements */
@@ -108,12 +99,13 @@ input,
 textarea,
 select {
   width: 100%;
-  padding: 8px;
+  padding: 12px;
   margin-bottom: 16px;
-  border: 2px solid #dddddd;
+  border: 1px solid #444444;
   border-radius: 4px;
-  background-color: #ffffff;
-  color: #333333;
+  background-color: #333333;
+  color: #ffffff;
+  font-size: 16px;
   transition: border-color 400ms;
 }
 
@@ -121,30 +113,82 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: #2e8b57;
+  border-color: #0071eb;
+  box-shadow: 0 0 0 2px rgba(0, 113, 235, 0.2);
 }
 
-.dark-theme input,
-.dark-theme textarea,
-.dark-theme select {
-  background-color: #1e1e1e;
-  color: #f0f0f0;
-  border: 2px solid #444444;
+/* Light Theme - Professional Reflection of Dark Theme */
+.light-theme body {
+  background-color: #f0f0f0;
+  color: #222222;
 }
 
-.dark-theme input:focus,
-.dark-theme textarea:focus,
-.dark-theme select:focus {
-  border-color: #4fc3f7;
+.light-theme main {
+  background-color: #f0f0f0;
+}
+
+.light-theme a {
+  color: #e50914;
+}
+
+.light-theme a:hover {
+  color: #b30710;
+}
+
+.light-theme button,
+.light-theme .btn {
+  background-color: #e50914;
+  color: #ffffff;
+}
+
+.light-theme button:hover,
+.light-theme .btn:hover {
+  background-color: #b30710;
+}
+
+.light-theme .btn-secondary {
+  background-color: #505050;
+  color: #ffffff;
+}
+
+.light-theme .btn-secondary:hover {
+  background-color: #404040;
+}
+
+.light-theme input,
+.light-theme textarea,
+.light-theme select {
+  background-color: #f8f8f8;
+  color: #222222;
+  border: 1px solid #cccccc;
+}
+
+.light-theme input:focus,
+.light-theme textarea:focus,
+.light-theme select:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .container {
-    padding: 0 8px;
+    padding: 0 16px;
   }
 
   main {
-    padding: 8px;
+    padding: 16px;
+  }
+  
+  h1 {
+    font-size: 28px;
+  }
+  
+  h2 {
+    font-size: 22px;
+  }
+  
+  h3 {
+    font-size: 18px;
   }
 }

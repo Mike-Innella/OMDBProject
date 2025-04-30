@@ -17,10 +17,12 @@ export const ThemeProvider = ({ children }) => {
 
   // Apply theme class to document body and save preference
   useEffect(() => {
-    if (theme === "dark") {
-      document.body.classList.add("dark-theme");
-    } else {
+    if (theme === "light") {
+      document.body.classList.add("light-theme");
       document.body.classList.remove("dark-theme");
+    } else {
+      document.body.classList.add("dark-theme");
+      document.body.classList.remove("light-theme");
     }
 
     localStorage.setItem("theme", theme);

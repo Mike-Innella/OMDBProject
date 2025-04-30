@@ -82,16 +82,14 @@ const MovieDetails = () => {
 
   return (
     <div className="movie-details container">
-      <button className="movie-details__back-btn" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
-
       <div className="movie-details__content">
-        <img
-          src={posterUrl}
-          alt={`${movie.Title} poster`}
-          className="movie-details__poster"
-        />
+        <div className="movie-details__poster-container">
+          <img
+            src={posterUrl}
+            alt={`${movie.Title} poster`}
+            className="movie-details__poster"
+          />
+        </div>
 
         <div className="movie-details__info">
           <h1>{movie.Title}</h1>
@@ -160,20 +158,26 @@ const MovieDetails = () => {
               </ul>
             </div>
           )}
-
-          <div className="movie-details__actions">
-            <button 
-              className="movie-details__add-to-cart" 
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </button>
-            {addedToCart && (
-              <span className="movie-details__added-message">
-                Added to cart!
-              </span>
-            )}
-          </div>
+        </div>
+      </div>
+      
+      <div className="movie-details__footer">
+        <button className="movie-details__back-btn" onClick={() => navigate(-1)}>
+          ← Back
+        </button>
+        
+        <div className="movie-details__actions">
+          <button 
+            className="movie-details__add-to-cart" 
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </button>
+          {addedToCart && (
+            <span className="movie-details__added-message">
+              Added to cart!
+            </span>
+          )}
         </div>
       </div>
     </div>

@@ -13,7 +13,9 @@ const SearchBar = ({ onSearch }) => {
 
   // Handle form submission
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
 
     if (!searchTerm.trim()) return;
 
@@ -57,9 +59,9 @@ const SearchBar = ({ onSearch }) => {
             <button
               className="search-bar__tag"
               type="button"
-              onClick={() => {
+              onClick={(e) => {
                 setSearchTerm("Star Wars");
-                onSearch("Star Wars");
+                handleSubmit(e);
               }}
             >
               Star Wars
@@ -68,9 +70,9 @@ const SearchBar = ({ onSearch }) => {
             <button
               className="search-bar__tag"
               type="button"
-              onClick={() => {
+              onClick={(e) => {
                 setSearchTerm("Marvel");
-                onSearch("Marvel");
+                handleSubmit(e);
               }}
             >
               Marvel
@@ -79,9 +81,9 @@ const SearchBar = ({ onSearch }) => {
             <button
               className="search-bar__tag"
               type="button"
-              onClick={() => {
+              onClick={(e) => {
                 setSearchTerm("Harry Potter");
-                onSearch("Harry Potter");
+                handleSubmit(e);
               }}
             >
               Harry Potter
@@ -90,9 +92,9 @@ const SearchBar = ({ onSearch }) => {
             <button
               className="search-bar__tag"
               type="button"
-              onClick={() => {
+              onClick={(e) => {
                 setSearchTerm("Lord of the rings");
-                onSearch("Lord of the rings");
+                handleSubmit(e);
               }}
             >
               Lord of the rings

@@ -46,6 +46,19 @@ const MovieCard = ({ movie }) => {
 
       <div className="movie-card__info">
         <h3 className="movie-card__title">{movie.Title}</h3>
+        
+        {/* Display ratings if available */}
+        {movie.Ratings && movie.Ratings.length > 0 && (
+          <div className="movie-card__ratings">
+            {movie.Ratings.map((rating, index) => (
+              <div key={index} className="movie-card__rating">
+                <span className="movie-card__rating-source">{rating.Source}:</span>
+                <span className="movie-card__rating-value">{rating.Value}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        
         <p className="movie-card__plot--short">
           {movie.Plot && movie.Plot !== "N/A"
             ? movie.Plot.length > 100

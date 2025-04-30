@@ -54,8 +54,7 @@ const Home = () => {
   }, []);
 
   // Handle movie search
-  const handleSearch = async (e, searchTerm) => {
-    e.preventDefault();
+  const handleSearch = async (searchTerm) => {
     setLoading((prev) => ({ ...prev, search: true }));
     setError((prev) => ({ ...prev, search: null }));
 
@@ -71,7 +70,7 @@ const Home = () => {
   };
 
   return (
-    <div className="home-page">
+    <div className="home-page container">
       {/* Hero Section */}
       <section className="home-page__hero">
         <div className="home-page__hero-content">
@@ -96,7 +95,7 @@ const Home = () => {
       {/* Top Rated Movies */}
       <section className="home-page__top-rated">
         <MovieList
-          movies={topRatedMovies}
+          movies={topRatedMovies.slice(0, 5)}
           title="Top Rated Movies"
           loading={loading.topRated}
           error={error.topRated}
@@ -106,7 +105,7 @@ const Home = () => {
       {/* Recent Releases */}
       <section className="home-page__recent-releases">
         <MovieList
-          movies={recentReleases}
+          movies={recentReleases.slice(0, 5)}
           title="Most Recent Releases"
           loading={loading.recent}
           error={error.recent}

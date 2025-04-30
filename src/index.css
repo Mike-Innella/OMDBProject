@@ -11,6 +11,6 @@
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
-  background-color: #61dafb; /* light theme default */
-  color: #333333; /* light theme default */
+  background-color: #121212; /* dark theme default */
+  color: #ffffff; /* dark theme default */
 }
