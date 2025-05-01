@@ -9,6 +9,7 @@ import {
   updatePassword,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
@@ -32,9 +33,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const auth = getAuth();
 
-  // Check if user is logged in
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
         setUpdateForm((prev) => ({
@@ -52,27 +52,23 @@ const Profile = () => {
     return () => unsubscribe();
   }, [auth, navigate]);
 
-  // Fetch order history from Firestore
   const fetchOrderHistory = async (userId) => {
     try {
       const ordersQuery = query(
         collection(db, "orders"),
-        where("userId", "==", userId)
+        where("user", "==", userId)
       );
       const querySnapshot = await getDocs(ordersQuery);
-
       const orders = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
       setOrderHistory(orders);
     } catch (error) {
       console.error("Error fetching order history:", error);
     }
   };
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUpdateForm((prev) => ({
@@ -81,19 +77,16 @@ const Profile = () => {
     }));
   };
 
-  // Handle profile update
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
     setIsUpdating(true);
     setUpdateStatus(null);
 
     try {
-      // Update display name
       if (updateForm.displayName !== user.displayName) {
         await updateProfile(user, { displayName: updateForm.displayName });
       }
 
-      // Update email
       if (updateForm.email !== user.email && updateForm.currentPassword) {
         const credential = EmailAuthProvider.credential(
           user.email,
@@ -103,7 +96,6 @@ const Profile = () => {
         await updateEmail(user, updateForm.email);
       }
 
-      // Update password
       if (updateForm.newPassword && updateForm.currentPassword) {
         if (updateForm.newPassword !== updateForm.confirmPassword) {
           throw new Error("New passwords do not match");
@@ -154,7 +146,6 @@ const Profile = () => {
     }
   };
 
-  // Handle logout
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -164,7 +155,6 @@ const Profile = () => {
     }
   };
 
-  // If loading, show loading spinner
   if (loading) {
     return (
       <div className="profile-page">
@@ -316,9 +306,9 @@ const Profile = () => {
                               Order #{order.id.substring(0, 8)}
                             </span>
                             <span className="order-date">
-                              {order.date
+                              {order.timestamp
                                 ? new Date(
-                                    order.date.toDate()
+                                    order.timestamp.toDate()
                                   ).toLocaleDateString()
                                 : "Unknown date"}
                             </span>
@@ -329,8 +319,8 @@ const Profile = () => {
                         </div>
 
                         <div className="order-items">
-                          {order.items.map((item) => (
-                            <div className="order-product" key={item.id}>
+                          {order.items.map((item, i) => (
+                            <div className="order-product" key={i}>
                               <div className="product-info">
                                 <h4>{item.title}</h4>
                                 <p>Quantity: {item.quantity}</p>
@@ -345,9 +335,11 @@ const Profile = () => {
                         <div className="order-status">
                           Status:{" "}
                           <span
-                            className={`status-${order.status.toLowerCase()}`}
+                            className={`status-${
+                              order.status?.toLowerCase() || "unknown"
+                            }`}
                           >
-                            {order.status}
+                            {order.status || "Unknown"}
                           </span>
                         </div>
                       </div>
