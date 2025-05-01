@@ -5,8 +5,9 @@ import { getAuth } from "firebase/auth";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { CartContext } from "../context/CartContext";
 import { db } from "../firebase";
+import { simulatePayment } from "../utils/mockPayment";
 import "../Styling/Pages.css";
-import "../Styling/Cart.css"
+import "../Styling/Cart.css";
 
 const Cart = () => {
   const {
@@ -31,13 +32,9 @@ const Cart = () => {
     country: "",
     phone: "",
   });
-  const [paymentInfo, setPaymentInfo] = useState({
-    cardName: "",
-    cardNumber: "",
-    expiryDate: "",
-    cvv: "",
-  });
   const [orderId, setOrderId] = useState(null);
+  const [transactionId, setTransactionId] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const navigate = useNavigate();
   const auth = getAuth();
@@ -47,23 +44,24 @@ const Cart = () => {
     setShippingInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handlePaymentChange = (e) => {
-    const { name, value } = e.target;
-    setPaymentInfo((prev) => ({ ...prev, [name]: value }));
-  };
-
   const nextStep = () => {
     if (checkoutStep === "cart") {
-      // Show guest checkout prompt if user is not logged in
       const user = auth.currentUser;
       if (!user) {
         setShowGuestPrompt(true);
       } else {
         setCheckoutStep("shipping");
       }
+    } else if (checkoutStep === "shipping") {
+      setCheckoutStep("payment");
+    } else if (checkoutStep === "payment") {
+      handlePlaceOrder();
     }
-    else if (checkoutStep === "shipping") setCheckoutStep("payment");
-    else if (checkoutStep === "payment") handlePlaceOrder();
+  };
+
+  const prevStep = () => {
+    if (checkoutStep === "shipping") setCheckoutStep("cart");
+    else if (checkoutStep === "payment") setCheckoutStep("shipping");
   };
 
   const handleGuestCheckout = () => {
@@ -73,11 +71,6 @@ const Cart = () => {
 
   const handleLoginRedirect = () => {
     navigate("/login");
-  };
-
-  const prevStep = () => {
-    if (checkoutStep === "shipping") setCheckoutStep("cart");
-    else if (checkoutStep === "payment") setCheckoutStep("shipping");
   };
 
   const validateStep = () => {
@@ -93,51 +86,45 @@ const Cart = () => {
       );
     }
     if (checkoutStep === "payment") {
-      return (
-        paymentInfo.cardName.trim() &&
-        paymentInfo.cardNumber.trim() &&
-        paymentInfo.expiryDate.trim() &&
-        paymentInfo.cvv.trim()
-      );
+      return true; // Simulated checkout: no payment validation
     }
     return true;
   };
 
   const handlePlaceOrder = async () => {
+    setIsProcessing(true);
     try {
-      const user = auth.currentUser;
-      const orderData = {
-        userId: user ? user.uid : "guest",
-        items: cartItems.map((item) => ({
-          id: item.imdbID,
-          title: item.Title,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-        total: getTotalPrice(),
-        shipping: shippingInfo,
-        date: serverTimestamp(),
-        status: "Processing",
-      };
-      const docRef = await addDoc(collection(db, "orders"), orderData);
-      setOrderId(docRef.id);
-      clearCart();
-      setCheckoutStep("confirmation");
+      const response = await simulatePayment();
+      if (response.success) {
+        setTransactionId(response.transactionId);
+        const docRef = await addDoc(collection(db, "orders"), {
+          user: auth.currentUser?.uid || "guest",
+          items: cartItems,
+          total: getTotalPrice(),
+          timestamp: serverTimestamp(),
+          transactionId: response.transactionId,
+        });
+        setOrderId(docRef.id);
+        clearCart();
+        setCheckoutStep("confirmation");
+      }
     } catch (error) {
-      console.error("Error placing order:", error);
-      alert("Failed to place order. Please try again.");
+      console.error(
+        "Simulated checkout error:",
+        error.message,
+        error.code,
+        error
+      );
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const handleRemoveItem = (item) => {
     removeFromCart(item.imdbID);
-    // Add to recently removed items and ensure it's not duplicated
     setRecentlyRemoved((prev) => {
-      const exists = prev.some(removed => removed.imdbID === item.imdbID);
-      if (exists) {
-        return prev;
-      }
-      return [...prev, item];
+      const exists = prev.some((removed) => removed.imdbID === item.imdbID);
+      return exists ? prev : [...prev, item];
     });
   };
 
@@ -149,66 +136,66 @@ const Cart = () => {
   };
 
   const renderCartItems = () => {
-    const cartContent = cartItems.length === 0 ? (
-      <div className="cart__empty">
-        <h2>Your cart is empty</h2>
-        <p>Looks like you haven't added any movies to your cart yet.</p>
-        <Link to="/" className="cart__continue-btn">
-          Browse Movies
-        </Link>
-      </div>
-    ) : (
-      <div className="cart__items-container">
-        {cartItems.map((item) => (
-          <div className="cart__item" key={item.imdbID}>
-            <div className="cart__item-image">
-              <img
-                src={
-                  item.Poster !== "N/A"
-                    ? item.Poster
-                    : "https://via.placeholder.com/100x150?text=No+Image"
-                }
-                alt={item.Title}
-              />
-            </div>
-            <div className="cart__item-details">
-              <h3>{item.Title}</h3>
-              <p className="cart__item-year">{item.Year}</p>
-            </div>
-            <div className="cart__item-quantity">
+    const cartContent =
+      cartItems.length === 0 ? (
+        <div className="cart__empty">
+          <h2>Your cart is empty</h2>
+          <p>Looks like you haven't added any movies to your cart yet.</p>
+          <Link to="/" className="cart__continue-btn">
+            Browse Movies
+          </Link>
+        </div>
+      ) : (
+        <div className="cart__items-container">
+          {cartItems.map((item) => (
+            <div className="cart__item" key={item.imdbID}>
+              <div className="cart__item-image">
+                <img
+                  src={
+                    item.Poster !== "N/A"
+                      ? item.Poster
+                      : "https://via.placeholder.com/100x150?text=No+Image"
+                  }
+                  alt={item.Title}
+                />
+              </div>
+              <div className="cart__item-details">
+                <h3>{item.Title}</h3>
+                <p className="cart__item-year">{item.Year}</p>
+              </div>
+              <div className="cart__item-quantity">
+                <button
+                  className="cart__quantity-btn"
+                  onClick={() => updateQuantity(item.imdbID, item.quantity - 1)}
+                  disabled={item.quantity <= 1}
+                >
+                  -
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  className="cart__quantity-btn"
+                  onClick={() => updateQuantity(item.imdbID, item.quantity + 1)}
+                >
+                  +
+                </button>
+              </div>
+              <div className="cart__item-price">
+                ${(item.price * item.quantity).toFixed(2)}
+              </div>
               <button
-                className="cart__quantity-btn"
-                onClick={() => updateQuantity(item.imdbID, item.quantity - 1)}
-                disabled={item.quantity <= 1}
+                className="cart__remove-btn"
+                onClick={() => handleRemoveItem(item)}
               >
-                -
-              </button>
-              <span>{item.quantity}</span>
-              <button
-                className="cart__quantity-btn"
-                onClick={() => updateQuantity(item.imdbID, item.quantity + 1)}
-              >
-                +
+                Remove
               </button>
             </div>
-            <div className="cart__item-price">
-              ${(item.price * item.quantity).toFixed(2)}
-            </div>
-            <button
-              className="cart__remove-btn"
-              onClick={() => handleRemoveItem(item)}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
-      </div>
-    );
+          ))}
+        </div>
+      );
 
     return (
       <div className="cart__list">
         {cartContent}
-        
         {recentlyRemoved.length > 0 && (
           <div className="cart__recently-removed">
             <h3>Recently Removed</h3>
@@ -216,17 +203,19 @@ const Cart = () => {
               <div key={item.imdbID} className="cart__removed-item">
                 <span>{item.Title}</span>
                 <div className="cart__removed-item-actions">
-                  <button 
-                    className="cart__readd-btn" 
+                  <button
+                    className="cart__readd-btn"
                     onClick={() => handleReAddItem(item)}
                   >
                     Re-add
                   </button>
-                  <button 
-                    className="cart__remove-permanently-btn" 
-                    onClick={() => setRecentlyRemoved(prev => 
-                      prev.filter(removed => removed.imdbID !== item.imdbID)
-                    )}
+                  <button
+                    className="cart__remove-permanently-btn"
+                    onClick={() =>
+                      setRecentlyRemoved((prev) =>
+                        prev.filter((removed) => removed.imdbID !== item.imdbID)
+                      )
+                    }
                   >
                     Remove
                   </button>
@@ -289,31 +278,11 @@ const Cart = () => {
 
   const renderPaymentForm = () => (
     <div className="cart__payment-form">
-      <h2>Payment Information</h2>
-      <input
-        type="text"
-        name="cardName"
-        placeholder="Name on Card"
-        onChange={handlePaymentChange}
-      />
-      <input
-        type="text"
-        name="cardNumber"
-        placeholder="Card Number"
-        onChange={handlePaymentChange}
-      />
-      <input
-        type="text"
-        name="expiryDate"
-        placeholder="Expiry Date"
-        onChange={handlePaymentChange}
-      />
-      <input
-        type="text"
-        name="cvv"
-        placeholder="CVV"
-        onChange={handlePaymentChange}
-      />
+      <h2>Payment (Simulated)</h2>
+      <p>
+        No payment info required. This is a mock checkout for demo purposes
+        only.
+      </p>
     </div>
   );
 
@@ -323,21 +292,21 @@ const Cart = () => {
         <h2>Checkout Options</h2>
         <p>Would you like to sign in or continue as a guest?</p>
         <div className="cart__guest-prompt-actions">
-          <button 
-            className="cart__guest-prompt-login" 
+          <button
+            className="cart__guest-prompt-login"
             onClick={handleLoginRedirect}
           >
             Sign In
           </button>
-          <button 
-            className="cart__guest-prompt-guest" 
+          <button
+            className="cart__guest-prompt-guest"
             onClick={handleGuestCheckout}
           >
             Continue as Guest
           </button>
         </div>
-        <button 
-          className="cart__guest-prompt-close" 
+        <button
+          className="cart__guest-prompt-close"
           onClick={() => setShowGuestPrompt(false)}
         >
           ✕
@@ -355,6 +324,10 @@ const Cart = () => {
         <div className="cart__confirmation">
           <h2>Order Placed Successfully! ✅</h2>
           <p>Your order ID is: {orderId}</p>
+          <p>Transaction ID: {transactionId}</p>
+          <p className="cart__payment-note">
+            Payment processed successfully (simulated)
+          </p>
           <Link to="/" className="cart__home-link">
             Return to Home
           </Link>
@@ -384,6 +357,7 @@ const Cart = () => {
           )}
           <button
             className="cart__actions-next"
+            disabled={isProcessing}
             onClick={() => {
               if (validateStep()) {
                 nextStep();
@@ -392,11 +366,15 @@ const Cart = () => {
               }
             }}
           >
-            {checkoutStep === "payment" ? "Place Order" : "Next →"}
+            {isProcessing && checkoutStep === "payment"
+              ? "Processing..."
+              : checkoutStep === "payment"
+              ? "Place Order"
+              : "Next →"}
           </button>
         </div>
       )}
-      
+
       {showGuestPrompt && renderGuestPrompt()}
     </div>
   );

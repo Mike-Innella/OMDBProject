@@ -79,7 +79,9 @@ const Header = () => {
               onClick={() => setMenuOpen(false)}
             >
               <span>Cart</span>
-              <span className="header__cart-count">{getItemCount()}</span>
+              {!menuOpen && (
+                <span className="header__cart-count">{getItemCount()}</span>
+              )}
             </Link>
           </li>
         </ul>

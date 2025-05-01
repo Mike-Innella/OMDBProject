@@ -5,7 +5,7 @@
 }
 
 .app__logo {
-  height: 160px; /* 40vmin approximated as 160px on 400px viewport */
+  height: 160px; 
   pointer-events: none;
 }
 

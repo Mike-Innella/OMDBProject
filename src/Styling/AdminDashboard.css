@@ -11,6 +11,14 @@
   transition: all 400ms ease;
 }
 
+/* Empty dashboard style */
+.admin-dashboard--empty {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .light-theme .admin-dashboard {
   background-color: #f4f4f4;
   color: #222222;
