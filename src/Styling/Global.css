@@ -74,7 +74,7 @@ button,
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 400ms;
+  transition: all 400ms ease;
   font-size: 16px;
   font-weight: 500;
 }

@@ -1,4 +1,3 @@
-// (directory path: /src/pages/Home.jsx)
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "../components/SearchBar";
@@ -60,13 +59,20 @@ const Home = () => {
 
     try {
       const results = await searchMoviesWithDetails(searchTerm);
-      setSearchResults(results); // Already a full array
+      setSearchResults(results);
     } catch (error) {
       console.error("Search error:", error);
       setError((prev) => ({ ...prev, search: error.message }));
     } finally {
       setLoading((prev) => ({ ...prev, search: false }));
     }
+  };
+
+  // Handle clearing the search
+  const handleClearSearch = () => {
+    setSearchResults([]);
+    setError((prev) => ({ ...prev, search: null }));
+    setLoading((prev) => ({ ...prev, search: false }));
   };
 
   return (
@@ -76,21 +82,21 @@ const Home = () => {
         <div className="home-page__hero-content">
           <h1>Find Your Favorite Movies</h1>
           <p>Search from thousands of titles and add them to your collection</p>
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar onSearch={handleSearch} onClear={handleClearSearch} />
         </div>
       </section>
 
       {/* Search Results */}
-      {(searchResults.length > 0 || loading.search || error.search) && (
-        <section className="home-page__search-results">
+      <section className="home-page__search-results">
+        {(searchResults.length > 0 || loading.search || error.search) && (
           <MovieList
             movies={searchResults}
             title="Search Results"
             loading={loading.search}
             error={error.search}
           />
-        </section>
-      )}
+        )}
+      </section>
 
       {/* Top Rated Movies */}
       <section className="home-page__top-rated">

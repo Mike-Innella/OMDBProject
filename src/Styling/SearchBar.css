@@ -1,12 +1,16 @@
 /* (directory path: /src/Styling/SearchBar.css) */
 
 .search-bar {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 40px;
   width: 100%;
 }
 
 .search-bar__form {
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
@@ -16,8 +20,10 @@
 }
 
 .search-bar__input {
-  flex-grow: 1;
-  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 8px;
   border: none;
   font-size: 16px;
   background-color: #2a2a2a;
@@ -42,7 +48,7 @@
 }
 
 .search-bar__button {
-  padding: 16px 24px;
+  padding: 24px 8px;
   background-color: #e50914;
   color: #ffffff;
   border: none;
@@ -54,16 +60,12 @@
   justify-content: center;
   align-items: center;
   font-size: 16px;
+  margin-left: 16px;
+  margin-bottom: 16px;
 }
 
-.search-bar__button:hover:not(:disabled) {
-  background-color: #f40612;
-}
-
-.search-bar__button:disabled {
-  background-color: #555555;
-  cursor: not-allowed;
-  opacity: 0.7;
+.search-bar__button:hover {
+  background-color: #2a2a2a;
 }
 
 /* Spinner */
@@ -135,7 +137,7 @@
   .search-bar {
     margin-bottom: 32px;
   }
-  
+
   .search-bar__form {
     flex-direction: column;
     border-radius: 8px;
