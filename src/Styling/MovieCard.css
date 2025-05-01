@@ -18,7 +18,8 @@
 }
 
 .light-theme .movie-card {
-  background-color: #f0f0f0;
+  background: linear-gradient(135deg, #e6e6e6 0%, #d1d1d1 100%);
+  color: #222222;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid #e0e0e0;
 }
@@ -213,7 +214,7 @@
     margin: 0;
     width: 100%;
   }
-  
+
   .home-page__top-rated .movie-card__poster,
   .home-page__recent-releases .movie-card__poster {
     height: 0;

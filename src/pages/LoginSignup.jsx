@@ -8,6 +8,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import "../Styling/Pages.css";
+import "../Styling/AuthPage.css";
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);

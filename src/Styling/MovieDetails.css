@@ -67,7 +67,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 32px;
-  margin: 0;
+  margin: 32px;
 }
 
 .movie-details__poster {
@@ -139,6 +139,7 @@
 
 .movie-details__add-to-cart {
   background-color: #e50914;
+  margin: 16px 8px 24px 16px;
   color: #ffffff;
   border: none;
   padding: 14px 28px;
@@ -154,6 +155,10 @@
   background-color: #f40612;
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(229, 9, 20, 0.4);
+}
+
+.dark-theme .movie-details__add-to-cart:hover {
+  background-color: #a9030c;
 }
 
 .movie-details__add-to-cart:active {
@@ -184,7 +189,7 @@
 
 /* Light theme override */
 .light-theme .movie-details {
-  background-color: #f0f0f0;
+  background: linear-gradient(135deg, #e6e6e6 0%, #d1d1d1 100%);
   color: #222222;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }

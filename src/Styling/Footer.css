@@ -7,6 +7,10 @@
   transition: all 400ms ease;
 }
 
+.light-theme .footer {
+  background: linear-gradient(135deg, #e6e6e6 0%, #d1d1d1 100%);
+}
+
 .footer__container {
   display: flex;
   flex-direction: column;
