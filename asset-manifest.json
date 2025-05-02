@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/OMDBProject/static/css/main.7188e11c.css",
+    "main.css": "/OMDBProject/static/css/main.32860715.css",
     "main.js": "/OMDBProject/static/js/main.415ea83e.js",
     "index.html": "/OMDBProject/index.html",
-    "main.7188e11c.css.map": "/OMDBProject/static/css/main.7188e11c.css.map",
+    "main.32860715.css.map": "/OMDBProject/static/css/main.32860715.css.map",
     "main.415ea83e.js.map": "/OMDBProject/static/js/main.415ea83e.js.map"
   },
   "entrypoints": [
-    "static/css/main.7188e11c.css",
+    "static/css/main.32860715.css",
     "static/js/main.415ea83e.js"
   ]
 }
