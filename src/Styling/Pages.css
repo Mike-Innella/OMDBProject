@@ -69,7 +69,7 @@
 }
 
 .home-page__hero-content {
-  background: inherit;
+  background: transparent;
   max-width: 800px;
   margin: 0 auto;
   padding: 0 24px;
