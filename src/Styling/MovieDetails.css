@@ -8,7 +8,7 @@
   background-color: #1e1e1e;
   color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px #0000004d;
   transition: all 400ms ease;
   height: fit-content;
   max-width: 1200px;
@@ -23,7 +23,7 @@
   color: #cccccc;
   background-color: #1e1e1e;
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px #0000004d;
 }
 
 .movie-details__error {
@@ -34,7 +34,7 @@
   background-color: #1e1e1e;
   border-radius: 8px;
   border-left: 4px solid #e50914;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 24px #0000004d;
 }
 
 .movie-details__back-btn {
@@ -46,7 +46,7 @@
   border-radius: 4px;
   cursor: pointer;
   align-self: flex-start;
-  transition: all 300ms ease;
+  transition: all 400ms ease;
   font-weight: 600;
   font-size: 14px;
   display: flex;
@@ -75,7 +75,7 @@
   max-width: 100%;
   max-height: 450px;
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px #00000066;
   object-fit: cover;
 }
 
@@ -147,14 +147,14 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 300ms ease;
-  box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+  transition: all 400ms ease;
+  box-shadow: 0 4px 12px #e509144d;
 }
 
 .movie-details__add-to-cart:hover {
   background-color: #f40612;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(229, 9, 20, 0.4);
+  box-shadow: 0 6px 16px #e5091466;
 }
 
 .dark-theme .movie-details__add-to-cart:hover {
@@ -163,7 +163,7 @@
 
 .movie-details__add-to-cart:active {
   transform: translateY(0);
-  box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+  box-shadow: 0 4px 8px #e509144d;
 }
 
 .movie-details__added-message {
@@ -171,9 +171,9 @@
   font-weight: 600;
   font-size: 16px;
   padding: 10px 16px;
-  background-color: rgba(46, 204, 113, 0.2);
+  background-color: #2ecc7133;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+  box-shadow: 0 4px 12px #2ecc7133;
   animation: fadeIn 0.3s ease-out;
   border-left: 3px solid #2ecc71;
 }
@@ -191,7 +191,7 @@
 .light-theme .movie-details {
   background: linear-gradient(135deg, #e6e6e6 0%, #d1d1d1 100%);
   color: #222222;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px #0000001a;
 }
 
 .light-theme .movie-details__info h1 {
@@ -228,7 +228,7 @@
 
 .light-theme .movie-details__added-message {
   color: #ffffff;
-  background-color: rgba(46, 204, 113, 0.8);
+  background-color: #2ecc71cc;
   border-left: 3px solid #27ae60;
 }
 
