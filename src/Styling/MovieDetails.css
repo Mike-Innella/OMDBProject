@@ -231,3 +231,26 @@
   background-color: rgba(46, 204, 113, 0.8);
   border-left: 3px solid #27ae60;
 }
+
+@media (max-width: 480px) {
+  .cart__header {
+    h1 {
+      font-size: 20px;
+    }
+  }
+
+  .cart__empty {
+    h2 {
+      font-size: 20px;
+    }
+  }
+
+  .cart__item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cart__item-price {
+    text-align: center;
+  }
+}
